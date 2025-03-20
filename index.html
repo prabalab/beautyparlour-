@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: pink;
+    }
+
+    .slideshow-container {
+      position: relative;
+      max-width: 800px;
+      margin: 50px auto;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      height: 400px;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 100%;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: all 1s ease-in-out;
+    }
+
+    .slide.active {
+      left: 0;
+      opacity: 1;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 30px;
+      color: #fff;
+      cursor: pointer;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 50%;
+      z-index: 10;
+    }
+
+    .nav-button.prev {
+      left: 10px;
+    }
+
+    .nav-button.next {
+      right: 10px;
+    }
+    
+    
+.services-section {
+  margin: 30px auto;
+  max-width: 800px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif; /* Apply the Google Font globally */
+  padding: 40px;
+}
+
+.services-section h2 {
+  font-size: 2.5em;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Service list styling */
+.services-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+/* Individual service items */
+.service-item {
+  position: relative;
+  background: linear-gradient(145deg, #ff7f7f, #ff4f4f);
+  color: white;
+  padding: 20px;
+  width: 180px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s ease, background-color 0.3s ease;
+  font-size: 1.2em;
+}
+
+/* Hover effect for service items */
+.service-item:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  background-color: #ff5757; /* Slight color change on hover */
+}
+
+/* For mobile responsiveness and better alignment */
+@media (max-width: 600px) {
+  .service-item {
+    width: 150px; /* Adjust size for smaller screens */
+    height: 70px;
+  }
+
+  .services-section h2 {
+    font-size: 2em; /* Adjust header size on smaller screens */
+  }
+}
+
+
+    .price-chart-section {
+      position: fixed;
+      top: -100%;
+      left: 0;
+      width: 100vw;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #ff8a8a, #ff4d4d); /* Adds a gradient background */
+      opacity: 0;
+      z-index: 100;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0px 0px 30px rgba(0, 0, 0, 0.3); /* Adds a subtle inner shadow */
+    }
+    
+    .price-chart-section h2 {
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Adds a shadow to the text */
+      font-size: 2em;
+    }
+    
+    .price-chart {
+      display: table;
+      width: 80%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: linear-gradient(to bottom, #ffffff, #f3f3f3); /* Adds a subtle gradient to the table background */
+      border-radius: 10px; /* Rounds the corners */
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); /* Adds a 3D shadow */
+      overflow: hidden; /* Ensures rounded corners apply to content */
+    }
+    
+    .price-chart th, .price-chart td {
+      border: 1px solid #ddd;
+      padding: 15px;
+      text-align: center;
+      font-size: 1em;
+    }
+    
+    .price-chart th {
+      background: linear-gradient(to bottom, #ff5757, #ff2e2e); /* Adds a gradient to the header */
+      color: white;
+      font-weight: bold;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds a shadow to make the header look elevated */
+    }
+    
+    .price-chart tr:nth-child(even) {
+      background: #f9f9f9; /* Lighter background for even rows */
+    }
+    
+    .price-chart tr:nth-child(odd) {
+      background: #ffffff; /* White background for odd rows */
+    }
+    
+    .price-chart tr:hover {
+      background: linear-gradient(to bottom, #ffe5e5, #ffd6d6); /* Adds a gradient highlight on hover */
+      transform: scale(1.02); /* Slightly enlarges the row for emphasis */
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1); /* Adds a shadow on hover */
+    }
+    
+    .price-chart td {
+      box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1); /* Adds depth to table cells */
+    }
+    
+    .price-chart th, .price-chart td {
+      border-radius: 5px; /* Rounds the edges of cells for a softer look */
+    }
+    .close-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(to bottom, #f3a6d7, #c874a1); /* Creates a gradient for 3D effect */
+      color: white;
+      border: 2px solid #b85687; /* Adds a darker border for depth */
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 5px; /* Smooth rounded corners */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* Adds outer and inner shadows */
+      transition: all 0.3s ease; /* Smooth transition for hover and active effects */
+    }
+    
+    .close-button:hover {
+      background: linear-gradient(to bottom, #c874a1, #f3a6d7); /* Inverts the gradient on hover */
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4), inset 0px -2px 4px rgba(255, 255, 255, 0.3); /* Enhances shadow depth */
+      transform: translateY(-2px); /* Lifts the button slightly */
+    }
+    
+    .close-button:active {
+      background: linear-gradient(to bottom, #b85687, #a0466d); /* Darker gradient for pressed effect */
+      box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.3); /* Adds an inset shadow for pressed effect */
+      transform: translateY(2px); /* Simulates being pressed */
+    }
+    
+       .image-gallery-section {
+         position: fixed;
+         top: 0;
+         left: -100%;
+         width: 100vw;
+         height: 100vh;
+         background-color: coral;
+         opacity: 0;
+         z-index: 100;
+         overflow: hidden;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+       }
+    .image-gallery-section h2 {
+      color: white;
+    }
+        .gallery-images {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          justify-content: center;
+        }
+        
+        .gallery-image {
+          width: 200px;
+          height: 150px;
+          background-size: cover;
+          background-position: center;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+  </style>
+<style>
+    .contact-section {
+        position: fixed;
+        bottom: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: coral;
+        opacity: 0;
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+    
+      .contact-section h2 {
+        color: white;
+        margin-bottom: 20px;
+      }
+    
+      .contact-info {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
+    
+      .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 80%;
+        max-width: 500px;
+      }
+    
+      .contact-form input,
+      .contact-form textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        font-size: 1em;
+      }
+    
+      .contact-form button {
+        background-color: white;
+        color: coral;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+    
+      .close-contact {
+        position: absolute;
+        top: 60px;
+        right: 50px;
+        background: linear-gradient(to bottom, #f3a6d7, #c874a1); /* Creates a gradient for a 3D effect */
+        color: white;
+        border: 2px solid #b85687; /* A darker border for contrast */
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        border-radius: 5px; /* Smooth corners */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* Adds outer and inner shadows */
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
+      }
+      
+      .close-contact:hover {
+        background: linear-gradient(to bottom, #c874a1, #f3a6d7); /* Inverts the gradient on hover */
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4), inset 0px -2px 4px rgba(255, 255, 255, 0.3); /* Enhances shadow depth */
+        transform: translateY(-2px); /* Lifts the button slightly */
+      }
+      
+      .close-contact:active {
+        background: linear-gradient(to bottom, #b85687, #a0466d); /* Darker gradient for a "pressed" effect */
+        box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.3); /* Adds an inset shadow */
+        transform: translateY(2px); /* Simulates being pressed */
+      }
+    
+      .show-contact-button {
+        margin: 20px auto;
+        display: block;
+        background-color: #f542bf;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+      }
+    </style>
+<style>
+.show-blogs-button,
+.show-price-button,
+.show-contact-button,
+.show-image-gallery-button {
+    font: italic small-caps bold 18px/30px Georgia, serif;
+    margin: 20px auto;
+ display: flex; /* Use flexbox to center text */
+  align-items: center; /* Vertically center the text */
+  justify-content: center; /* Horizontally center the text */
+  background: linear-gradient(to bottom, #f767c5, #c02697); /* Creates a gradient for 3D effect */
+  color: white;
+  padding: 30px 60px;
+  border: 4px solid #a11d7a; /* A darker border to enhance the 3D effect */
+  border-radius: 50%; /* Makes the button round */
+  font-size: 1.6em;
+  cursor: pointer;
+  width: 100px; /* Width and height set to the same value for a circular shape */
+  height: 100px;
+  text-align: center; /* Centers the text in the middle of the circle */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4), inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* Adds inner and outer shadows */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+.show-blogs-button:hover,
+.show-price-button:hover,
+.show-contact-button:hover,
+.show-image-gallery-button:hover {
+  background: linear-gradient(to bottom, #c02697, #f767c5); /* Inverts the gradient on hover */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5), inset 0px -2px 4px rgba(255, 255, 255, 0.3); /* Intensifies the shadow */
+  transform: translateY(-2px); /* Slightly lifts the button for a 3D "pressed" effect */
+}
+
+.show-blogs-button,
+.show-price-button:active,
+.show-contact-button:active,
+.show-image-gallery-button:active {
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.4), inset 0px 2px 6px rgba(0, 0, 0, 0.2); /* Adds an inset shadow for a "pressed" effect */
+  transform: translateY(2px); /* Pushes the button down slightly */
+}
+
+ .contact-info {
+   background-color: coral; /* Light background */
+   border: 2px solid #ddd; /* Subtle border */
+   border-radius: 8px; /* Rounded corners */
+   padding: 16px; /* Spacing around content */
+   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Drop shadow */
+   font-family: Arial, sans-serif; /* Clean font */
+   max-width: 400px; /* Width limit */
+   margin: 20px auto; /* Center on page */
+   color: white;
+ }
+ 
+ .contact-info p {
+   margin: 8px 0; /* Space between lines */
+   color: white; /* Text color */
+   font-size: 16px; /* Text size */
+   display: flex;
+   align-items: center; /* Align text with icons */
+   
+ }
+ 
+ .contact-info .icon {
+   margin-right: 8px; /* Space between icon and text */
+   font-size: 18px; /* Icon size */
+   color: #555; /* Icon color */
+ }
+ 
+ .contact-info p:hover {
+   color: #007BFF; /* Change text color on hover */
+   transform: translateX(4px); /* Add slight motion */
+   transition: all 0.3s ease-in-out; /* Smooth hover effect */
+ }
+</style>
+  <style>
+    .curved {
+        position: absolute;
+      border-radius: 0px 100% 0 100%; /* Corrected border-radius */
+      height: 250px;
+      width: 48%;
+    margin-top: -140px;
+    margin-left: 2%;
+      background: #d77ce6;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    transform-origin: 100% 50%; /* Adjusts the pivot point for animation */
+    animation: fly-left 4s infinite ease-in-out;
+    }
+        .curvedr {
+          position: absolute;
+          border-radius: 100% 0 100% 0; /* Corrected border-radius */
+          height: 250px;
+          width: 48%;
+          background: #d77ce6;
+          color: white;
+          display: flex;
+        margin-top: -250px;
+        margin-left: 50%;
+          justify-content: center;
+          align-items: center;
+          //transform: rotate(270deg); /* Rotates the element by 180° */
+          transform-origin: center; /* Ensures rotation happens around the center */
+        transform-origin: 0 50%; /* Adjusts the pivot point for animation */
+        animation: fly-right 4s infinite ease-in-out;
+        }
+        
+          /* Left wing animation */
+          @keyframes fly-left {
+            0%, 100% {
+              transform: rotate(15deg);
+            }
+            50% {
+              transform: rotate(-15deg);
+            }
+          }
+          
+          /* Right wing animation */
+          @keyframes fly-right {
+            0%, 100% {
+              transform: rotate(-15deg);
+            }
+            50% {
+              transform: rotate(15deg);
+            }
+          }
+  </style>
+<style>
+    .blogs-section {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #ff8a8a, #ff4d4d); /* Adds a gradient background */
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0px;
+      transition: transform 0.5s ease-in-out;
+    }
+    
+    .blogs-section h2 {
+      color: darkblue;
+      margin-bottom: 20px;
+    }
+    
+    .blogs-content {
+      color: darkblue;
+      text-align: center;
+      max-width: 600px;
+    }
+    
+    .close-blogs {
+      position: absolute;
+      top: 40px;
+      right: 50px;
+      background: linear-gradient(to bottom, #f3a6d7, #c874a1); /* Creates a gradient for a 3D effect */
+        color: white;
+        border: 2px solid #b85687; /* A darker border for contrast */
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        border-radius: 5px; /* Smooth corners */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* Adds outer and inner shadows */
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
+      }
+
+</style>
+
+<style>
+ 
+          .blogs-header {
+          margin-top: 50px;
+          text-align: center;
+        }
+        
+        .blogs-header h2 {
+          color: white;
+          font-size: 2.5em;
+          letter-spacing: 1px;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .blogs-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 20px;
+          padding: 20px;
+          width: 100%;
+          max-width: 1200px;
+        }
+        
+        .blog-card {
+          background: white;
+          border-radius: 15px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          text-decoration: none;
+          color: inherit;
+          position: relative;
+        }
+        
+        .blog-card:hover {
+          transform: translateY(-10px) scale(1.03);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .blog-card img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+        
+        .blog-card:hover img {
+          transform: scale(1.05);
+        }
+        
+        .blog-card-content {
+          padding: 20px;
+        }
+        
+        .blog-card-content h3 {
+          margin: 0 0 10px;
+          font-size: 1.5em;
+          color: #4a4a4a;
+        }
+        
+        .blog-card-content p {
+          margin: 0;
+          font-size: 0.95em;
+          color: #666;
+        }
+        
+        .blog-card:before {
+          content: "";
+          position: absolute;
+          top: -100%;
+          left: 0;
+          width: 100%;
+          height: 5px;
+          background: linear-gradient(90deg, #6a11cb, #2575fc);
+          animation: loadingBar 3s infinite;
+        }
+        
+        @keyframes loadingBar {
+          0% {
+            top: -100%;
+          }
+          50% {
+            top: 100%;
+          }
+          100% {
+            top: -100%;
+          }
+        }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const slides = [
+      "slideshowb/gallery-anim1.jpg",
+      "slideshowb/gallery-anim2.jpg",
+      "slideshowb/gallery-anim3.jpg",
+    ];
+    
+    const galleryImages = [
+      "img-gallery/gallery1.jpg",
+      "img-gallery/gallery2.jpg",
+      "img-gallery/gallery3.jpg",
+      "img-gallery/gallery4.jpg",
+      "img-gallery/gallery5.jpeg",
+      "img-gallery/gallery6.jpeg",
+    ];
+    
+    
+    const blogs = [
+      {
+        title: "Blog Post 1",
+        description: "This is the description for Blog Post 1.",
+        image: "blog-img/img1.jpeg",
+        link: "https://example.com/blog1",
+      },
+      {
+        title: "Blog Post 2",
+        description: "This is the description for Blog Post 2.",
+        image: "blog-img/img2.jpg",
+        link: "https://example.com/blog2",
+      },
+      {
+        title: "Blog Post 3",
+        description: "This is the description for Blog Post 3.",
+        image: "blog-img/img3.jpg",
+        link: "https://example.com/blog3",
+      },
+      {
+        title: "Blog Post 4",
+        description: "This is the description for Blog Post 4.",
+        image: "blog-img/img4.jpg",
+        link: "https://example.com/blog4",
+      },
+    ];
+    
+    const BlogCard = ({ title, description, image, link }) => (
+      <a href={link} target="_blank" rel="noopener noreferrer" className="blog-card">
+        <img src={image} alt={title} />
+        <div className="blog-card-content">
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+      </a>
+    );
+
+    const App = () => {
+      const [currentSlide, setCurrentSlide] = useState(0);
+
+      const nextSlide = () => {
+        setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+      };
+
+      const prevSlide = () => {
+        setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+      };
+
+      useEffect(() => {
+        const interval = setInterval(nextSlide, 5000);
+        return () => clearInterval(interval);
+      }, []);
+
+      const showPriceChart = () => {
+        gsap.to(".price-chart-section", {
+          duration: 1,
+          opacity: 1,
+          top: 0,
+          ease: "power2.out",
+        });
+      };
+
+      const hidePriceChart = () => {
+        gsap.to(".price-chart-section", {
+          duration: 1,
+          opacity: 0,
+          top: "-100%",
+          ease: "power2.in",
+        });
+      };
+
+const showImageGallery = () => {
+  gsap.to(".image-gallery-section", {
+    duration: 1,
+    opacity: 1,
+    left: 0,
+    ease: "power2.out",
+  });
+};
+
+const hideImageGallery = () => {
+  gsap.to(".image-gallery-section", {
+    duration: 1,
+    opacity: 0,
+    left: "-100%",
+    ease: "power2.in",
+  });
+};
+
+
+const showContactSection = () => {
+  gsap.to(".contact-section", {
+    duration: 1,
+    opacity: 1,
+    bottom: 0,
+    ease: "power2.out",
+  });
+};
+
+const hideContactSection = () => {
+  gsap.to(".contact-section", {
+    duration: 1,
+    opacity: 0,
+    bottom: "-100%",
+    ease: "power2.in",
+  });
+};
+
+const showBlogsSection = () => {
+  gsap.to(".blogs-section", {
+    duration: 1,
+    right: 0,
+    ease: "power2.out",
+    delay: 0.1,
+  });
+};
+
+const hideBlogsSection = () => {
+  gsap.to(".blogs-section", {
+    duration: 1,
+    right: "-100%",
+    ease: "power2.in",
+    delay: 0.1,
+  });
+};
+
+
+
+      return (
+        <React.Fragment>
+          <div className="slideshow-container">
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className={`slide ${index === currentSlide ? "active" : ""}`}
+                style={{ backgroundImage: `url(${slide})` }}
+              ></div>
+            ))}
+            <button className="nav-button prev" onClick={prevSlide}>
+              &laquo;
+            </button>
+            <button className="nav-button next" onClick={nextSlide}>
+             &raquo;
+            </button>
+          </div>
+          <button className="show-price-button" onClick={showPriceChart}>Price</button>
+            <div className="curved">
+            </div>
+                 <div className="curvedr">
+                 </div>
+        <div className="services-section">
+            <h2>Our Services</h2>
+            <ul className="services-list">
+              <li className="service-item"><span>Facials</span></li>
+              <li className="service-item"><span>Haircuts</span></li>
+              <li className="service-item"><span>Manicure & Pedicure</span></li>
+              <li className="service-item"><span>Makeup</span></li>
+            </ul>
+          </div>
+
+          <div className="price-chart-section">
+            <button className="close-button" onClick={hidePriceChart}>Home</button>
+            <h2>Price Chart</h2>
+        <table className="price-chart">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Facials</td>
+              <td>$30</td>
+            </tr>
+            <tr>
+              <td>Haircuts</td>
+              <td>$15</td>
+            </tr>
+            <tr>
+              <td>Manicure & Pedicure</td>
+              <td>$25</td>
+            </tr>
+            <tr>
+              <td>Makeup</td>
+              <td>$50</td>
+            </tr>
+            <tr>
+              <td>Hair Coloring</td>
+              <td>$40</td>
+            </tr>
+            <tr>
+              <td>Threading</td>
+              <td>$10</td>
+            </tr>
+            <tr>
+              <td>Waxing (Full Body)</td>
+              <td>$60</td>
+            </tr>
+            <tr>
+              <td>Eyebrow Shaping</td>
+              <td>$8</td>
+            </tr>
+            <tr>
+              <td>Bridal Makeup</td>
+              <td>$150</td>
+            </tr>
+            <tr>
+              <td>Body Scrubbing</td>
+              <td>$35</td>
+            </tr>
+            <tr>
+              <td>Hair Spa</td>
+              <td>$45</td>
+            </tr>
+            <tr>
+              <td>Skin Polishing</td>
+              <td>$70</td>
+            </tr>
+            <tr>
+              <td>Head Massage</td>
+              <td>$20</td>
+            </tr>
+            <tr>
+              <td>Party Makeup</td>
+              <td>$80</td>
+            </tr>
+          </tbody>
+        </table>
+             <button className="show-image-gallery-button" onClick={showImageGallery}>
+               Gallery
+             </button>
+          </div>
+        
+           <div className="image-gallery-section">
+             <button className="close-button" onClick={hideImageGallery}>Price</button>
+             <h2>Image Gallery</h2>
+             <div className="gallery-images">
+               {galleryImages.map((image, index) => (
+                 <div
+                   key={index}
+                   className="gallery-image"
+                   style={{ backgroundImage: `url(${image})` }}
+                 ></div>
+               ))}
+             </div>
+              <button className="show-contact-button" onClick={showContactSection}>
+                Contact Us
+              </button>
+           </div>
+        
+           <div className="contact-section">
+             <button className="close-contact" onClick={hideContactSection}>
+               Gallery
+             </button>
+             <h2>Contact Us</h2>
+             <form className="contact-form">
+               <input type="text" placeholder="Your Name" required />
+               <input type="email" placeholder="Your Email" required />
+               <textarea rows="5" placeholder="Your Message" required></textarea>
+               <button type="submit">Send</button>
+             </form>
+        <div className="contact-info">
+          <p><span className="icon">&#128205;</span> Address: 123 Main Street, Springfield</p>
+          <p><span className="icon">&#9993;</span> Email: contact@example.com</p>
+        </div>
+               <button className="show-blogs-button" onClick={showBlogsSection}>
+                 View Blogs
+               </button>
+           </div>
+        
+         
+            
+               <div className="blogs-section">
+                 <button className="close-blogs" onClick={hideBlogsSection}>
+                   Contact
+                 </button>
+                 <div className="blogs-header">
+                   <h2>Our Blogs</h2>
+                 </div>
+                 <div className="blogs-grid">
+                   {blogs.map((blog, index) => (
+                     <BlogCard
+                       key={index}
+                       title={blog.title}
+                       description={blog.description}
+                       image={blog.image}
+                       link={blog.link}
+                     />
+                   ))}
+                 </div>
+               </div>
+        
+        </React.Fragment>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
